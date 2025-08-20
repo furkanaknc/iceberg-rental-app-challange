@@ -123,6 +123,13 @@
           "command": "ts-node prisma/seeds/create-admin.ts",
           "cwd": "apps/backend"
         }
+      },
+      "db:seed:office": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "ts-node prisma/seeds/create-main-office.ts",
+          "cwd": "apps/backend"
+        }
       }
     }
   },
@@ -133,7 +140,8 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "db:seed:admin": "ts-node prisma/seeds/create-admin.ts"
+    "db:seed:admin": "ts-node prisma/seeds/create-admin.ts",
+    "db:seed:office": "ts-node prisma/seeds/create-main-office.ts"
   },
   "dependencies": {}
 }
