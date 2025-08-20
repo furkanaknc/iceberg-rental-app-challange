@@ -2,7 +2,18 @@
   "name": "@real-estate-app/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "serve:backend": "nx serve backend --configuration=development",
+    "serve:prod:backend": "nx serve backend",
+    "db:generate": "nx run backend:db:generate",
+    "db:push": "nx run backend:db:push",
+    "db:migrate": "nx run backend:db:migrate",
+    "db:migrate:deploy": "nx run backend:db:migrate:deploy",
+    "db:studio": "nx run backend:db:studio",
+    "db:reset": "nx run backend:db:reset",
+    "prisma:seed:admin": "nx run backend:prisma:seed:admin",
+    "build": "nx build"
+  },
   "private": true,
   "dependencies": {
     "@anatine/zod-nestjs": "^2.0.12",
