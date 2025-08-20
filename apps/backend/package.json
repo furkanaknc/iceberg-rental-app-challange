@@ -74,6 +74,55 @@
             "buildTarget": "@real-estate-app/backend:build:production"
           }
         }
+      },
+      "db:generate": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma generate",
+          "cwd": "apps/backend"
+        }
+      },
+      "db:push": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma db push",
+          "cwd": "apps/backend"
+        }
+      },
+      "db:migrate": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma migrate dev",
+          "cwd": "apps/backend"
+        }
+      },
+      "db:migrate:deploy": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma migrate deploy",
+          "cwd": "apps/backend"
+        }
+      },
+      "db:studio": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma studio",
+          "cwd": "apps/backend"
+        }
+      },
+      "db:reset": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "prisma migrate reset",
+          "cwd": "apps/backend"
+        }
+      },
+      "db:seed:admin": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "ts-node prisma/seeds/create-admin.ts",
+          "cwd": "apps/backend"
+        }
       }
     }
   },
@@ -84,7 +133,7 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "prisma:seed:admin": "tsx prisma/seeds/create-main-office.ts"
+    "db:seed:admin": "ts-node prisma/seeds/create-admin.ts"
   },
   "dependencies": {}
 }
