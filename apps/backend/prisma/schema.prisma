@@ -21,6 +21,7 @@ model User {
   last_name    String
   phone        String?
   role         Role          @default(AGENT)
+  status       UserStatus    @default(ACTIVE)
   appointments Appointment[]
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
@@ -30,7 +31,7 @@ model Customer {
   id           String        @id @default(uuid())
   first_name   String
   last_name    String
-  email        String?
+  email        String
   phone        String?
   appointments Appointment[]
   created_at   DateTime      @default(now())
@@ -84,6 +85,7 @@ model Office {
 enum Role {
   ADMIN
   AGENT
+  CUSTOMER
 }
 
 enum AppointmentStatus {
