@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  first_name   String
+  last_name    String
+  phone        String?
+  role         Role          @default(AGENT)
+  appointments Appointment[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+}
+
+model Customer {
+  id           String        @id @default(uuid())
+  first_name   String
+  last_name    String
+  email        String?
+  phone        String?
+  appointments Appointment[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+}
+
+model Property {
+  id           String        @id @default(uuid())
+  title        String
+  parish       String
+  postcode     String
+  latitude     Decimal       @db.Decimal(9, 6)
+  longitude    Decimal       @db.Decimal(9, 6)
+  appointments Appointment[]
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+}
+
+model Appointment {
+  id                   String            @id @default(uuid())
+  agent_id             String
+  customer_id          String
+  property_id          String
+  starts_at            DateTime          @db.Timestamptz(6)
+  distance_km          Decimal?          @db.Decimal(8, 2)
+  travel_duration_min  Int?
+  departure_time       DateTime?         @db.Timestamptz(6)
+  return_time          DateTime?         @db.Timestamptz(6)
+  available_again_time DateTime?         @db.Timestamptz(6)
+  status               AppointmentStatus @default(SCHEDULED)
+  notes                String?
+  agent                User              @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  customer             Customer          @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  property             Property          @relation(fields: [property_id], references: [id], onDelete: Restrict)
+  created_at           DateTime          @default(now())
+  updated_at           DateTime          @updatedAt
+
+  @@unique([agent_id, starts_at])
+}
+
+model Office {
+  id         String   @id @default(uuid())
+  name       String
+  latitude   Decimal? @db.Decimal(9, 6)
+  longitude  Decimal? @db.Decimal(9, 6)
+  postcode   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  AGENT
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
