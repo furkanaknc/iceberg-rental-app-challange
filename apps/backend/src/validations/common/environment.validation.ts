@@ -11,8 +11,11 @@ export const envSchema = z.object({
   JWT_EXPIRES_IN: z.string(),
 
   POSTCODE_API_URL: z.string(),
+
   OPENROUTESERVICE_API_KEY: z.string(),
   OPENROUTESERVICE_API_URL: z.string(),
+
+  APPOINTMENT_DURATION_MINUTES: z.coerce.number().default(60),
 });
 
 export type EnvVariables = z.infer<typeof envSchema>;
