@@ -81,6 +81,13 @@ export class AppointmentsService {
         ...query?.where,
         agent_id: agentId,
       },
+      include: {
+        customer: true,
+        property: true,
+      },
+      orderBy: {
+        starts_at: 'asc',
+      },
     });
   }
 
