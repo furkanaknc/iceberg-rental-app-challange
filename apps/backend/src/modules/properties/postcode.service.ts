@@ -25,19 +25,11 @@ export class PostcodeService {
       const data = response.data;
       const result = data.result as PostcodeResult;
 
-      const parish =
-        result.parish ||
-        result.admin_district ||
-        result.admin_county ||
-        result.admin_ward ||
-        result.region ||
-        'Unknown Area';
-
       return {
         postcode: result.postcode,
         latitude: result.latitude,
         longitude: result.longitude,
-        parish: parish,
+        parish: result.parish,
       };
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 404) {
@@ -48,6 +40,63 @@ export class PostcodeService {
       throw new BadRequestError({
         message: `Error looking up postcode: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
+    }
+  }
+
+  async searchPostcodes(query: string, limit = 10): Promise<PostcodeInfo[]> {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get<PostcodeApiResponse>(
+          `${this.baseUrl}/postcodes?query=${encodeURIComponent(query)}&limit=${limit}`,
+        ),
+      );
+
+      const data = response.data;
+      const results = data.result as PostcodeResult[];
+
+      return results.map((result) => ({
+        postcode: result.postcode,
+        latitude: result.latitude,
+        longitude: result.longitude,
+        parish: result.parish,
+      }));
+    } catch (error) {
+      throw new BadRequestError({
+        message: `Error searching postcodes: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
+    }
+  }
+
+  async findNearestPostcodes(latitude: number, longitude: number, limit = 10): Promise<PostcodeInfo[]> {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get<PostcodeApiResponse>(
+          `${this.baseUrl}/postcodes?lat=${latitude}&lon=${longitude}&limit=${limit}`,
+        ),
+      );
+
+      const data = response.data;
+      const results = data.result as PostcodeResult[];
+
+      return results.map((result) => ({
+        postcode: result.postcode,
+        latitude: result.latitude,
+        longitude: result.longitude,
+        parish: result.parish,
+      }));
+    } catch (error) {
+      throw new BadRequestError({
+        message: `Error finding nearest postcodes: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
+    }
+  }
+
+  async validatePostcode(postcode: string): Promise<boolean> {
+    try {
+      await this.lookupPostcode(postcode);
+      return true;
+    } catch {
+      return false;
     }
   }
 }

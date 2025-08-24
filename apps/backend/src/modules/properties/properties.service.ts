@@ -7,7 +7,6 @@ import { PrismaFindManyArgs } from '../../common/types/prisma.type';
 import { paginate } from '../../common/utils/pagination.util';
 import { PaginatedAPIResponse } from '../../common/types/response.type';
 import { NotFoundError } from '../../common/errors/not-found.error';
-import { ConflictError } from '../../common/errors/conflict.error';
 
 @Injectable()
 export class PropertiesService {
@@ -64,16 +63,6 @@ export class PropertiesService {
 
   async delete(id: string): Promise<void> {
     await this.findByIdOrThrow(id);
-
-    const appointmentCount = await this.prismaService.appointment.count({
-      where: { property_id: id },
-    });
-
-    if (appointmentCount > 0) {
-      throw new ConflictError({
-        message: `Cannot delete property. There are ${appointmentCount} appointment(s) associated with this property. Please cancel or delete the appointments first.`,
-      });
-    }
 
     await this.prismaService.property.delete({ where: { id } });
   }

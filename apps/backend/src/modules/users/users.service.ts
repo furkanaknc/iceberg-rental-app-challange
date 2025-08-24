@@ -89,22 +89,11 @@ export class UsersService {
   async getDetails(id: string): Promise<User> {
     const user = await this.prismaService.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        first_name: true,
-        last_name: true,
-        phone: true,
-        role: true,
-        status: true,
-        created_at: true,
-        updated_at: true,
-      },
     });
 
     if (!user) throw new NotFoundError({ message: 'User not found' });
 
-    return user as User;
+    return user;
   }
 
   async deleteAccount(id: string): Promise<void> {
