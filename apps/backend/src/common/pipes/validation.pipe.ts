@@ -6,7 +6,7 @@ import { ValidationError } from '../errors/validation.error';
 
 @Injectable()
 export class ValidationPipe extends ZodValidationPipe {
-  override transform(data: unknown, metadata: ArgumentMetadata): unknown {
+  transform(data: unknown, metadata: ArgumentMetadata): unknown {
     const zodSchema = (metadata?.metatype as ZodDtoStatic)?.zodSchema;
 
     if (zodSchema) {
