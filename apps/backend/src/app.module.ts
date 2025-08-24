@@ -8,10 +8,9 @@ import { ValidationPipe } from './common/pipes/validation.pipe';
 import { GlobalExceptionFilter } from './common/exception-filters/global-exception.filter';
 import { UsersModule } from './modules/users/users.module';
 import { PropertiesModule } from './modules/properties/properties.module';
-import { AppointmentsModule } from './modules/appointments/appointments.module';
 
 @Module({
-  imports: [PrismaModule, EnvironmentModule, UsersModule, AuthModule, PropertiesModule, AppointmentsModule],
+  imports: [PrismaModule, EnvironmentModule, UsersModule, AuthModule, PropertiesModule],
   providers: [
     {
       provide: APP_PIPE,
