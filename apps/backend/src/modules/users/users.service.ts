@@ -13,21 +13,6 @@ import { UserRegisterPayload } from '../../validations/auth.validation';
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async checkExistUserOrThrow(
-    email: string,
-    phone?: string,
-    options?: Omit<Prisma.UserFindUniqueArgs, 'where'>,
-  ): Promise<void> {
-    const existingUser = await this.prismaService.user.findFirst({
-      ...options,
-      where: {
-        OR: [{ email }, { phone }],
-      },
-    });
-
-    if (existingUser) throw new ConflictError({ message: 'User already exists' });
-  }
-
   async findByIdOrThrow(id: string, options?: Omit<Prisma.UserFindUniqueArgs, 'where'>): Promise<User> {
     const user = await this.prismaService.user.findUnique({
       ...options,
