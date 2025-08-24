@@ -114,7 +114,7 @@ async function createAdmin() {
         email,
         first_name: firstName,
         last_name: lastName,
-        phone: phone,
+        phone: phone || null,
         password: hashedPassword,
         role: Role.ADMIN,
         status: UserStatus.ACTIVE,

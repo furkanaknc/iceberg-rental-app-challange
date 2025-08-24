@@ -15,7 +15,7 @@ export class UsersService {
 
   async checkExistUserOrThrow(
     email: string,
-    phone: string,
+    phone?: string,
     options?: Omit<Prisma.UserFindUniqueArgs, 'where'>,
   ): Promise<void> {
     const existingUser = await this.prismaService.user.findFirst({

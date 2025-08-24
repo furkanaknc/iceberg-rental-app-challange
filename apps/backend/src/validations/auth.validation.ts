@@ -14,7 +14,7 @@ export const firstNameSchema = z.string().min(3);
 
 export const lastNameSchema = z.string().min(3);
 
-export const phoneSchema = z.string().min(10);
+export const phoneSchema = z.string().min(10).optional();
 
 export const userRegisterSchema = z.object({
   email: emailSchema,
