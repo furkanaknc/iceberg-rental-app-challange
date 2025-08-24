@@ -77,14 +77,5 @@
       }
     }
   },
-  "scripts": {
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset",
-    "prisma:seed:admin": "tsx prisma/seeds/create-main-office.ts"
-  },
   "dependencies": {}
 }
