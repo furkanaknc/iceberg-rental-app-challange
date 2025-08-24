@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'AGENT', 'CUSTOMER');
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'AGENT');
 
 -- CreateEnum
 CREATE TYPE "AppointmentStatus" AS ENUM ('SCHEDULED', 'COMPLETED', 'CANCELLED');
@@ -16,7 +16,6 @@ CREATE TABLE "User" (
     "last_name" TEXT NOT NULL,
     "phone" TEXT,
     "role" "Role" NOT NULL DEFAULT 'AGENT',
-    "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -28,7 +27,7 @@ CREATE TABLE "Customer" (
     "id" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "email" TEXT,
     "phone" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
