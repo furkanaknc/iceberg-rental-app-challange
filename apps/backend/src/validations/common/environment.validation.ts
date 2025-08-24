@@ -9,8 +9,6 @@ export const envSchema = z.object({
 
   JWT_SECRET: z.string(),
   JWT_EXPIRES_IN: z.string(),
-
-  POSTCODE_API_URL: z.string(),
 });
 
 export type EnvVariables = z.infer<typeof envSchema>;
