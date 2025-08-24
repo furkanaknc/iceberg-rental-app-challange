@@ -52,7 +52,7 @@ export class UsersService {
 
   async create(payload: UserRegisterPayload): Promise<OmittedUser> {
     const { password, ...data } = payload;
-    const hashedPassword = hashPassword(password);
+    const hashedPassword = hashPassword(payload.password);
     return this.prismaService.user.create({
       data: {
         ...data,

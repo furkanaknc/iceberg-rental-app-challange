@@ -7,10 +7,9 @@ import { JwtGuard } from './common/guards/jwt.guard';
 import { ValidationPipe } from './common/pipes/validation.pipe';
 import { GlobalExceptionFilter } from './common/exception-filters/global-exception.filter';
 import { UsersModule } from './modules/users/users.module';
-import { PropertiesModule } from './modules/properties/properties.module';
 
 @Module({
-  imports: [PrismaModule, EnvironmentModule, UsersModule, AuthModule, PropertiesModule],
+  imports: [PrismaModule, EnvironmentModule, UsersModule, AuthModule],
   providers: [
     {
       provide: APP_PIPE,
