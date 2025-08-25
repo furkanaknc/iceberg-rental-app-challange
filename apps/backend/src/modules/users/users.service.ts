@@ -5,7 +5,7 @@ import { ConflictError } from '../../common/errors/conflict.error';
 import { NotFoundError } from '../../common/errors/not-found.error';
 import { OmittedUser } from '../../common/types/model.type';
 import { hashPassword } from '../../common/utils/hash-password.util';
-import { UserUpdatePayload } from '../../validations/users.validation';
+import { UserUpdatePayload, UserUpdateRolePayload } from '../../validations/users.validation';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { UserRegisterPayload } from '../../validations/auth.validation';
 
@@ -105,6 +105,16 @@ export class UsersService {
     if (!user) throw new NotFoundError({ message: 'User not found' });
 
     return user as User;
+  }
+
+  async updateState(payload: UserUpdateRolePayload): Promise<OmittedUser> {
+    await this.findByIdOrThrow(payload.id);
+
+    return this.prismaService.user.update({
+      where: { id: payload.id },
+      data: { role: payload.role, status: payload.status },
+      omit: { role: false, status: false },
+    });
   }
 
   async deleteAccount(id: string): Promise<void> {

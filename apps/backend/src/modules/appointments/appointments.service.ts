@@ -91,10 +91,12 @@ export class AppointmentsService {
     });
   }
 
-  async updateAppointment(id: string, agentId: string, payload: any): Promise<Appointment> {
+  async updateAppointment(id: string, agentId: string, payload: any, isAdmin = false): Promise<Appointment> {
     return await this.prisma.$transaction(async (tx) => {
+      const whereClause = isAdmin ? { id } : { id, agent_id: agentId };
+
       const existingAppointment = await tx.appointment.findUnique({
-        where: { id, agent_id: agentId },
+        where: whereClause,
       });
 
       if (!existingAppointment) {
@@ -148,25 +150,78 @@ export class AppointmentsService {
             return_time: calculations.return_time,
             available_again_time: calculations.available_again_time,
           },
+          include: {
+            customer: {
+              select: {
+                first_name: true,
+                last_name: true,
+                email: true,
+                phone: true,
+              },
+            },
+            agent: {
+              select: {
+                first_name: true,
+                last_name: true,
+                email: true,
+                phone: true,
+              },
+            },
+            property: {
+              select: {
+                title: true,
+                parish: true,
+                postcode: true,
+              },
+            },
+          },
         });
       }
 
       return await tx.appointment.update({
         where: { id },
         data: payload,
+        include: {
+          customer: {
+            select: {
+              first_name: true,
+              last_name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          agent: {
+            select: {
+              first_name: true,
+              last_name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          property: {
+            select: {
+              title: true,
+              parish: true,
+              postcode: true,
+            },
+          },
+        },
       });
     });
   }
 
-  async deleteAppointment(id: string, agentId: string): Promise<void> {
+  async deleteAppointment(id: string, agentId: string, isAdmin = false): Promise<void> {
     await this.findByIdOrThrow(id);
 
+    // Admin can delete any appointment, agent can only delete their own
+    const whereClause = isAdmin ? { id } : { id, agent_id: agentId };
+
     await this.prisma.appointment.delete({
-      where: { id, agent_id: agentId },
+      where: whereClause,
     });
   }
 
-  private async calculateAppointmentTimes(
+  async calculateAppointmentTimes(
     office: Office,
     property: Property,
     appointmentStart: Date,

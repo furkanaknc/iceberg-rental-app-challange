@@ -9,8 +9,6 @@ import { Property } from '@prisma/client';
 import { OrderBy } from '../../common/decorators/orderby-decorator';
 import { Pagination } from '../../common/decorators/pagination.decorator';
 import type { PaginationPayload } from '../../validations/common/pagination.validation';
-import { UserRoles } from '../../common/decorators/user-role.decorator';
-import { Role } from '@prisma/client';
 
 @ApiTags('Properties')
 @ApiBearerAuth('JWT-auth')
@@ -68,14 +66,12 @@ export class PropertiesController {
     return await this.propertiesService.list({ where: search, orderBy, skip, take });
   }
 
-  @UserRoles(Role.ADMIN)
   @HttpCode(204)
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a property (Admin only)' })
+  @ApiOperation({ summary: 'Delete a property' })
   @ApiParam({ name: 'id', description: 'Property ID' })
   @ApiResponse({ status: 204, description: 'Property deleted successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
   @ApiResponse({ status: 404, description: 'Property not found' })
   async deleteProperty(@Param('id') id: string) {
     return await this.propertiesService.delete(id);
