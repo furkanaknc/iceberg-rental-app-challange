@@ -133,6 +133,19 @@ A full-stack real estate management application built with NestJS, Vue.js 3, and
    ```
    Frontend will run on http://localhost:4200
 
+3. **OR Start All Services At once**
+```bash
+npx nx run-many -t serve --projects=backend,frontend --parallel
+```
+Frontend will run on http://localhost:4200
+
+4. **You can use**
+```bash
+npm run serve:backend  
+npm run serve:frontend  
+npm run serve:all
+```
+
 ### Production Build
 
 1. **Build backend**
