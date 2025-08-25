@@ -54,12 +54,13 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     }
   };
 
-  const fetchAppointments = async () => {
+  const fetchAppointments = async (isAdmin = false) => {
     try {
       loading.value = true;
       error.value = null;
 
-      const response = await apiService.get('/appointments/schedule');
+      const endpoint = isAdmin ? '/admin/appointments' : '/appointments/schedule';
+      const response = await apiService.get(endpoint);
       appointments.value = response.data.items || response.data;
     } catch (err: any) {
       console.error('Failed to fetch appointments:', err);
@@ -129,6 +130,47 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     }
   };
 
+  const adminUpdateAppointment = async (id: string, updateData: UpdateAppointmentData) => {
+    try {
+      loading.value = true;
+      error.value = null;
+
+      const response = await apiService.patch(`/admin/appointments/${id}`, updateData);
+      const updatedAppointment = response.data;
+
+      const index = appointments.value.findIndex((apt) => apt.id === id);
+      if (index !== -1) {
+        appointments.value[index] = updatedAppointment;
+      }
+
+      return { success: true, data: updatedAppointment };
+    } catch (err: any) {
+      const errorMessage = getErrorMessage(err, 'Failed to update appointment');
+      console.error('Failed to update appointment (admin):', err);
+      return { success: false, error: errorMessage };
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const adminDeleteAppointment = async (id: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+
+      await apiService.delete(`/admin/appointments/${id}`);
+
+      appointments.value = appointments.value.filter((apt) => apt.id !== id);
+      return { success: true };
+    } catch (err: any) {
+      const errorMessage = getErrorMessage(err, 'Failed to delete appointment');
+      console.error('Failed to delete appointment (admin):', err);
+      return { success: false, error: errorMessage };
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const getAppointmentById = (id: string) => {
     return appointments.value.find((apt) => apt.id === id);
   };
@@ -146,6 +188,8 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     createAppointment,
     updateAppointment,
     deleteAppointment,
+    adminUpdateAppointment,
+    adminDeleteAppointment,
     getAppointmentById,
   };
 });

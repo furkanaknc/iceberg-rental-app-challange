@@ -7,6 +7,7 @@
       @create="showCreateForm = true"
       @edit="handleEdit"
       @delete="handleDelete"
+      @forceDelete="handleForceDelete"
       @search="handleSearch"
     />
 
@@ -94,6 +95,19 @@ const handleDelete = async (property: Property) => {
     notificationsStore.success('Property Deleted', `"${property.title}" has been deleted successfully`);
   } else {
     notificationsStore.error('Deletion Failed', result.error || 'Unknown error occurred');
+  }
+};
+
+const handleForceDelete = async (property: Property) => {
+  const result = await propertiesStore.forceDeleteProperty(property.id);
+
+  if (result.success) {
+    notificationsStore.success(
+      'Property Force Deleted',
+      `"${property.title}" and all its appointments have been permanently deleted`,
+    );
+  } else {
+    notificationsStore.error('Force Deletion Failed', result.error || 'Unknown error occurred');
   }
 };
 

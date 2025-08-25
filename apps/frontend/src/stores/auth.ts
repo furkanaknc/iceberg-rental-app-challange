@@ -14,7 +14,9 @@ export const useAuthStore = defineStore('auth', () => {
   const isAdmin = computed(() => user.value?.role === 'ADMIN');
   const isAgent = computed(() => user.value?.role === 'AGENT');
   const canCreateProperty = computed(() => isAdmin.value || isAgent.value);
-  const canDeleteProperty = computed(() => isAdmin.value);
+  const canDeleteProperty = computed(() => isAdmin.value || isAgent.value);
+  const canForceDeleteProperty = computed(() => isAdmin.value);
+  const canManageAllAppointments = computed(() => isAdmin.value);
 
   const setToken = (newToken: string) => {
     token.value = newToken;
@@ -100,6 +102,8 @@ export const useAuthStore = defineStore('auth', () => {
     isAgent,
     canCreateProperty,
     canDeleteProperty,
+    canForceDeleteProperty,
+    canManageAllAppointments,
     login,
     register,
     logout,

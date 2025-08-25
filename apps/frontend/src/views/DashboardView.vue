@@ -26,7 +26,9 @@
       <div v-else class="space-y-8">
         <section>
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-gray-900">Upcoming Appointments</h2>
+            <h2 class="text-2xl font-bold text-gray-900">
+              {{ authStore.isAdmin ? 'All Upcoming Appointments' : 'Your Upcoming Appointments' }}
+            </h2>
             <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
               {{ appointmentsStore.upcomingAppointments.length }} scheduled
             </span>
@@ -65,7 +67,9 @@
         </section>
 
         <section v-if="appointmentsStore.pastAppointments.length > 0">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Appointments</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">
+            {{ authStore.isAdmin ? 'All Recent Appointments' : 'Your Recent Appointments' }}
+          </h2>
 
           <div class="bg-white shadow overflow-hidden sm:rounded-md">
             <ul class="divide-y divide-gray-200">
@@ -92,6 +96,10 @@
                       <div class="text-sm text-gray-500">
                         {{ appointment.property?.title || 'Unknown Property' }} •
                         {{ appointment.property?.postcode || 'Unknown' }}
+                      </div>
+                      <div v-if="authStore.isAdmin" class="text-sm text-blue-600">
+                        Agent: {{ appointment.agent?.first_name || 'Unknown' }}
+                        {{ appointment.agent?.last_name || 'Agent' }}
                       </div>
                       <div class="text-sm text-gray-500">
                         {{ appointmentsStore.formatAppointmentTime(appointment.starts_at) }}
@@ -158,7 +166,10 @@ const deleteAppointment = async (appointmentId: string) => {
   });
 
   if (confirmed) {
-    const result = await appointmentsStore.deleteAppointment(appointmentId);
+    const result = authStore.isAdmin
+      ? await appointmentsStore.adminDeleteAppointment(appointmentId)
+      : await appointmentsStore.deleteAppointment(appointmentId);
+
     if (result.success) {
       notificationsStore.success('Appointment Deleted', 'Appointment has been deleted successfully');
     } else {
@@ -168,7 +179,8 @@ const deleteAppointment = async (appointmentId: string) => {
 };
 
 onMounted(() => {
-  appointmentsStore.fetchAppointments();
+  const isAdmin = authStore.isAdmin;
+  appointmentsStore.fetchAppointments(isAdmin);
 });
 </script>
 

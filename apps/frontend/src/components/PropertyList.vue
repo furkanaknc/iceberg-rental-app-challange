@@ -49,6 +49,15 @@
             >
               {{ deletingId === property.id ? '...' : '🗑️' }}
             </button>
+            <button
+              v-if="canForceDeleteProperty"
+              @click="handleForceDelete(property)"
+              class="btn btn-sm btn-warning"
+              title="Force delete property (ignores appointments)"
+              :disabled="deletingId === property.id"
+            >
+              {{ deletingId === property.id ? '...' : '⚡' }}
+            </button>
           </div>
         </div>
 
@@ -98,6 +107,7 @@ interface Emits {
   (e: 'create'): void;
   (e: 'edit', property: Property): void;
   (e: 'delete', property: Property): void;
+  (e: 'forceDelete', property: Property): void;
   (e: 'search', query: string): void;
 }
 
@@ -109,9 +119,9 @@ const confirmationStore = useConfirmationStore();
 const searchQuery = ref('');
 const deletingId = ref<string | null>(null);
 
-// Role-based permissions
 const canCreateProperty = computed(() => authStore.canCreateProperty);
 const canDeleteProperty = computed(() => authStore.canDeleteProperty);
+const canForceDeleteProperty = computed(() => authStore.canForceDeleteProperty);
 
 const handleSearch = () => {
   emit('search', searchQuery.value);
@@ -130,6 +140,25 @@ const handleDelete = async (property: Property) => {
     deletingId.value = property.id;
     try {
       emit('delete', property);
+    } finally {
+      deletingId.value = null;
+    }
+  }
+};
+
+const handleForceDelete = async (property: Property) => {
+  const confirmed = await confirmationStore.show({
+    title: 'Force Delete Property',
+    message: `Are you sure you want to FORCE DELETE "${property.title}"? This will delete ALL associated appointments and cannot be undone.`,
+    confirmText: 'Force Delete',
+    cancelText: 'Cancel',
+    type: 'danger',
+  });
+
+  if (confirmed) {
+    deletingId.value = property.id;
+    try {
+      emit('forceDelete', property);
     } finally {
       deletingId.value = null;
     }
