@@ -6,7 +6,7 @@
     "serve:backend": "npm run db:seed:office && nx serve backend --configuration=development",
     "serve:prod:backend": "nx serve backend",
     "serve:frontend": "nx serve frontend",
-    "serve:all": "npm run serve:backend & npm run serve:frontend",
+    "serve:all": "nx run-many -t serve --projects=backend,frontend --parallel",
     "db:generate": "cd apps/backend && npm run db:generate",
     "db:push": "cd apps/backend && npm run db:push",
     "db:migrate": "cd apps/backend && npm run db:migrate",
