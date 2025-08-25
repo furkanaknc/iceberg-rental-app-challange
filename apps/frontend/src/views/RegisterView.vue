@@ -154,7 +154,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
@@ -256,6 +256,53 @@ const validateForm = () => {
   errors.value.password = validatePassword(form.value.password);
   errors.value.confirmPassword = validateConfirmPassword(form.value.confirmPassword, form.value.password);
 };
+
+// Real-time validation
+watch(
+  () => form.value.first_name,
+  (newValue) => {
+    errors.value.first_name = validateFirstName(newValue);
+  },
+);
+
+watch(
+  () => form.value.last_name,
+  (newValue) => {
+    errors.value.last_name = validateLastName(newValue);
+  },
+);
+
+watch(
+  () => form.value.email,
+  (newValue) => {
+    errors.value.email = validateEmail(newValue);
+  },
+);
+
+watch(
+  () => form.value.phone,
+  (newValue) => {
+    errors.value.phone = validatePhone(newValue);
+  },
+);
+
+watch(
+  () => form.value.password,
+  (newValue) => {
+    errors.value.password = validatePassword(newValue);
+    // Also revalidate confirm password when password changes
+    if (form.value.confirmPassword) {
+      errors.value.confirmPassword = validateConfirmPassword(form.value.confirmPassword, newValue);
+    }
+  },
+);
+
+watch(
+  () => form.value.confirmPassword,
+  (newValue) => {
+    errors.value.confirmPassword = validateConfirmPassword(newValue, form.value.password);
+  },
+);
 
 const handleRegister = async () => {
   validateForm();

@@ -210,6 +210,7 @@ import { useRouter, useRoute } from 'vue-router';
 import { useAppointmentsStore } from '../stores/appointments';
 import { usePropertiesStore } from '../stores/properties';
 import { useNotificationsStore } from '../stores/notifications';
+import { useAuthStore } from '../stores/auth';
 import { format, parseISO } from 'date-fns';
 
 const router = useRouter();
@@ -217,6 +218,7 @@ const route = useRoute();
 const appointmentsStore = useAppointmentsStore();
 const propertiesStore = usePropertiesStore();
 const notificationsStore = useNotificationsStore();
+const authStore = useAuthStore();
 
 const appointmentId = route.params.id as string;
 const loading = ref(true);
@@ -334,7 +336,9 @@ const handleSubmit = async () => {
     updateData.notes = form.value.notes || undefined;
   }
 
-  const result = await appointmentsStore.updateAppointment(appointmentId, updateData);
+  const result = authStore.isAdmin
+    ? await appointmentsStore.adminUpdateAppointment(appointmentId, updateData)
+    : await appointmentsStore.updateAppointment(appointmentId, updateData);
 
   if (result.success) {
     notificationsStore.success('Appointment Updated', 'Appointment has been updated successfully');

@@ -15,6 +15,14 @@ export interface Property {
   longitude: number;
 }
 
+export interface Agent {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+}
+
 export interface Appointment {
   id: string;
   agent_id: string;
@@ -30,6 +38,7 @@ export interface Appointment {
   notes?: string;
   customer: Customer;
   property: Property;
+  agent?: Agent;
   created_at: string;
   updated_at: string;
 }

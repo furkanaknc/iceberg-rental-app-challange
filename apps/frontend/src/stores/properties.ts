@@ -109,6 +109,24 @@ export const usePropertiesStore = defineStore('properties', () => {
     }
   };
 
+  const forceDeleteProperty = async (id: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+
+      await apiService.delete(`/admin/force-delete-property/${id}`);
+      properties.value = properties.value.filter((property) => property.id !== id);
+
+      return { success: true };
+    } catch (err: any) {
+      const errorMessage = getErrorMessage(err, 'Failed to force delete property');
+      console.error('Failed to force delete property:', err);
+      return { success: false, error: errorMessage };
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const getPropertyById = (id: string) => {
     return properties.value.find((property) => property.id === id);
   };
@@ -121,6 +139,7 @@ export const usePropertiesStore = defineStore('properties', () => {
     createProperty,
     updateProperty,
     deleteProperty,
+    forceDeleteProperty,
     getPropertyById,
     clearProperties,
   };
