@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, HttpCode, Patch, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
-import type { User } from '@prisma/client';
+import { Role, type User } from '@prisma/client';
 
 import type { IRequest } from '../../common/interfaces/requests.interface';
 import type { OmittedUser } from '../../common/types/model.type';
-import { UserUpdatePayload } from '../../validations/users.validation';
+import { UserUpdatePayload, UserUpdateRolePayload } from '../../validations/users.validation';
 import { UsersService } from './users.service';
+import { UserRoles } from '../../common/decorators/user-role.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth('JWT-auth')
@@ -37,6 +38,18 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async updateProfile(@Req() req: IRequest, @Body() payload: UserUpdatePayload): Promise<OmittedUser> {
     return await this.usersService.updateProfile(req.user.id, payload);
+  }
+
+  @UserRoles(Role.ADMIN)
+  @Patch('update-state')
+  @ApiOperation({ summary: 'Update user role and status (admin only)' })
+  @ApiBody({ type: UserUpdateRolePayload })
+  @ApiResponse({ status: 200, description: 'User role and status updated successfully', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async updateState(@Body() payload: UserUpdateRolePayload): Promise<OmittedUser> {
+    return await this.usersService.updateState(payload);
   }
 
   @HttpCode(204)

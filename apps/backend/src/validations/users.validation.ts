@@ -23,7 +23,9 @@ const userUpdateSchema = userBaseUpdateSchema.pick({
   password: true,
 });
 
-const userUpdateRoleSchema = userBaseUpdateSchema.pick({ role: true, status: true });
+const userUpdateRoleSchema = userBaseUpdateSchema.pick({ role: true, status: true }).extend({
+  id: z.string(),
+});
 
 export class UserCreatePayload extends createZodDto(userCreateSchema) {}
 export class UserUpdatePayload extends createZodDto(userUpdateSchema) {}

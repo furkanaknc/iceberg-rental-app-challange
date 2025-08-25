@@ -9,9 +9,10 @@ import { GlobalExceptionFilter } from './common/exception-filters/global-excepti
 import { UsersModule } from './modules/users/users.module';
 import { PropertiesModule } from './modules/properties/properties.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
-  imports: [PrismaModule, EnvironmentModule, UsersModule, AuthModule, PropertiesModule, AppointmentsModule],
+  imports: [PrismaModule, EnvironmentModule, UsersModule, AuthModule, PropertiesModule, AppointmentsModule, AdminModule],
   providers: [
     {
       provide: APP_PIPE,
