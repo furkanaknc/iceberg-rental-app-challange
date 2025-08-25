@@ -46,7 +46,7 @@ model Property {
   postcode     String
   latitude     Decimal       @db.Decimal(9, 6)
   longitude    Decimal       @db.Decimal(9, 6)
-  appointments Appointment[]
+  appointments Appointment[] 
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
 }
@@ -66,7 +66,7 @@ model Appointment {
   notes                String?
   agent                User              @relation(fields: [agent_id], references: [id], onDelete: Cascade)
   customer             Customer          @relation(fields: [customer_id], references: [id], onDelete: Restrict)
-  property             Property          @relation(fields: [property_id], references: [id], onDelete: Restrict)
+  property             Property          @relation(fields: [property_id], references: [id], onDelete: Cascade)
   created_at           DateTime          @default(now())
   updated_at           DateTime          @updatedAt
 
