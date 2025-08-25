@@ -1,101 +1,338 @@
-# RealEstateApp
+# Real Estate Management System
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A full-stack real estate management application built with NestJS, Vue.js 3, and PostgreSQL. The system supports property management, appointment scheduling, and role-based access control for real estate agencies.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## 🏗️ Architecture
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **Backend**: NestJS with TypeScript, Prisma ORM, PostgreSQL
+- **Frontend**: Vue.js 3 (Composition API), Pinia state management, Tailwind CSS
+- **Database**: PostgreSQL with Docker
+- **Monorepo**: Nx workspace for managing multiple applications
 
-## Run tasks
+## 🚀 Features
 
-To run the dev server for your app, use:
+### 🏠 Property Management
 
-```sh
-npx nx serve backend
+- Create, read, update, delete properties
+- Property search and filtering
+- Location-based distance calculations using OpenRouteService API
+- Coordinate-based property mapping
+
+### 📅 Appointment Scheduling
+
+- Schedule property viewings
+- Automatic travel time calculations
+- Agent and customer availability checking
+- Real-time conflict detection
+- Appointment status management (SCHEDULED, COMPLETED, CANCELLED)
+
+### 👥 User Management & Authentication
+
+- JWT-based authentication
+- Role-based access control (ADMIN, AGENT)
+- User registration and profile management
+- Secure password hashing
+
+### 🔐 Role-Based Permissions
+
+- **Agents**: Can create properties, manage their own appointments
+- **Admins**: Full system access, can manage all properties and appointments
+- **Smart UI**: Role-based button visibility and functionality
+
+### 📱 Modern UI/UX
+
+- Responsive design for mobile and desktop
+- Custom notification system
+- Confirmation dialogs
+- Real-time form validation
+- Loading states and error handling
+
+## 🛠️ Prerequisites
+
+- Node.js (v18 or higher)
+- Docker and Docker Compose
+- npm or yarn
+
+## 📦 Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd real-estate-app
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   Create `.env` file in `apps/backend/`:
+
+   ```env
+   # Database
+   DATABASE_URL="postgresql://postgres:password@localhost:5432/real_estate_db"
+
+   # JWT
+   JWT_SECRET="your-super-secret-jwt-key"
+   JWT_EXPIRES_IN="7d"
+
+   # External APIs
+   POSTCODE_API_URL="https://api.postcodes.io"
+   OPENROUTESERVICE_API_KEY="your-openrouteservice-api-key"
+   OPENROUTESERVICE_API_URL="https://api.openrouteservice.org/v2/directions/driving-car"
+
+   # Application Settings
+   APPOINTMENT_DURATION_MINUTES=60
+   ```
+
+## 🐳 Database Setup
+
+1. **Start PostgreSQL with Docker Compose**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Generate Prisma client**
+
+   ```bash
+   cd apps/backend
+   npx prisma generate
+   ```
+
+3. **Run database migrations**
+
+   ```bash
+   npx prisma db push
+   ```
+
+4. **Seed the database (optional)**
+   ```bash
+   npx prisma db seed
+   ```
+
+## 🏃‍♂️ Running the Application
+
+### Development Mode
+
+1. **Start the backend**
+
+   ```bash
+   npx nx serve backend
+   ```
+
+   Backend will run on http://localhost:3000
+
+2. **Start the frontend**
+   ```bash
+   npx nx serve frontend
+   ```
+   Frontend will run on http://localhost:4200
+
+### Production Build
+
+1. **Build backend**
+
+   ```bash
+   npx nx build backend
+   ```
+
+2. **Build frontend**
+   ```bash
+   npx nx build frontend
+   ```
+
+## 📊 Database Schema
+
+### Core Tables
+
+- **Users**: Agent and admin accounts
+- **Customers**: Property viewing customers
+- **Properties**: Real estate listings with coordinates
+- **Offices**: Agency office locations
+- **Appointments**: Scheduled property viewings
+
+### Key Relationships
+
+- Users (agents) belong to offices
+- Appointments link agents, customers, and properties
+- Distance calculations between offices and properties
+
+## 🔧 API Endpoints
+
+### Authentication
+
+```
+POST /auth/login       - User login
+POST /auth/register    - Agent registration
 ```
 
-To create a production bundle:
+### Properties
 
-```sh
-npx nx build backend
+```
+GET    /properties           - List properties (with search)
+POST   /properties           - Create property (ADMIN/AGENT)
+PATCH  /properties/:id       - Update property
+DELETE /properties/:id       - Delete property (ADMIN/AGENT)
 ```
 
-To see all available targets to run for a project, run:
+### Appointments
 
-```sh
-npx nx show project backend
+```
+GET    /appointments/schedule    - Get agent's appointments
+POST   /appointments             - Create appointment
+PATCH  /appointments/:id         - Update appointment
+DELETE /appointments/:id         - Delete appointment
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Admin Endpoints
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/node:app demo
+```
+GET    /admin/appointments        - List all appointments
+PATCH  /admin/appointments/:id    - Update any appointment
+DELETE /admin/appointments/:id    - Delete any appointment
+DELETE /admin/force-delete-property/:id - Force delete property
 ```
 
-To generate a new library, use:
+## 🎯 Key Features in Detail
 
-```sh
-npx nx g @nx/node:lib mylib
+### Distance Calculation System
+
+- **Primary**: OpenRouteService API for accurate driving routes
+- **Fallback**: Haversine formula for basic distance calculation
+- **Auto-calculation**: Travel times, departure times, and availability windows
+
+### Appointment Conflict Prevention
+
+- **Agent availability**: Prevents double-booking agents
+- **Customer availability**: Prevents customer conflicts
+- **Travel time consideration**: Accounts for travel between appointments
+
+### Smart UI Components
+
+- **PropertyList**: Role-based action buttons
+- **AppointmentCard**: Interactive dropdown menus
+- **NotificationSystem**: Custom success/error messages
+- **ConfirmationDialogs**: Replace native browser alerts
+
+## 🧪 Development Commands
+
+```bash
+# View project structure
+npx nx graph
+
+# Run linting
+npx nx lint backend
+npx nx lint frontend
+
+# Run tests
+npx nx test backend
+npx nx test frontend
+
+# Database commands
+cd apps/backend
+npx prisma studio          # Open database GUI
+npx prisma migrate dev     # Create new migration
+npx prisma db push         # Push schema changes
+npx prisma generate        # Regenerate Prisma client
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## 🔍 Environment Variables
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Required Variables
 
-## Set up CI!
+- `DATABASE_URL`: PostgreSQL connection string
+- `JWT_SECRET`: Secret key for JWT tokens
+- `OPENROUTESERVICE_API_KEY`: API key for route calculations
 
-### Step 1
+### Optional Variables
 
-To connect to Nx Cloud, run the following command:
+- `JWT_EXPIRES_IN`: Token expiration time (default: 7d)
+- `APPOINTMENT_DURATION_MINUTES`: Default appointment length (default: 60)
 
-```sh
-npx nx connect
-```
+## 📱 Mobile Responsiveness
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+The application is fully responsive with:
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Mobile-first design approach
+- Touch-friendly interface elements
+- Adaptive layouts for different screen sizes
+- Optimized forms for mobile input
 
-### Step 2
+## 🛡️ Security Features
 
-Use the following command to configure a CI workflow for your workspace:
+- **Password hashing**: Bcrypt for secure password storage
+- **JWT authentication**: Stateless authentication tokens
+- **Role-based access**: Granular permission system
+- **Input validation**: Zod schema validation on backend
+- **CORS protection**: Configured for secure cross-origin requests
 
-```sh
-npx nx g ci-workflow
-```
+## 🚨 Error Handling
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Custom error classes**: Structured error responses
+- **Global exception filter**: Centralized error handling
+- **Validation errors**: User-friendly error messages
+- **Frontend notifications**: Real-time error feedback
 
-## Install Nx Console
+## 📈 Performance Optimizations
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+- **Database indexing**: Optimized queries for appointments and properties
+- **Lazy loading**: Vue.js route-based code splitting
+- **Caching**: Efficient state management with Pinia
+- **Distance caching**: Avoid redundant API calls
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🎨 UI/UX Features
 
-## Useful links
+- **Dark/Light mode ready**: CSS custom properties
+- **Loading states**: Skeleton loaders and spinners
+- **Form validation**: Real-time validation feedback
+- **Accessibility**: ARIA labels and keyboard navigation
+- **Custom components**: Reusable Vue.js components
 
-Learn more:
+## 🔄 State Management
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Frontend State (Pinia)
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **AuthStore**: User authentication and permissions
+- **PropertiesStore**: Property CRUD operations
+- **AppointmentsStore**: Appointment management
+- **NotificationsStore**: Toast notifications
+- **ConfirmationStore**: Modal confirmations
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Database connection issues**
+
+   ```bash
+   # Restart Docker containers
+   docker-compose down && docker-compose up -d
+   ```
+
+2. **Prisma client out of sync**
+
+   ```bash
+   cd apps/backend
+   npx prisma generate
+   ```
+
+3. **Port already in use**
+   ```bash
+   # Kill processes on ports 3000 or 4200
+   lsof -ti:3000 | xargs kill -9
+   lsof -ti:4200 | xargs kill -9
+   ```
+
+## 📝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
