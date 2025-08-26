@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "serve:backend": "npm run db:seed:office && nx serve backend --configuration=development",
-    "serve:prod:backend": "npm run db:migrate:prod && npm run db:seed:office:prod && nx serve backend",
+    "serve:prod:backend": "npm run db:migrate:prod && npm run db:generate && npm run db:seed:office:prod && nx serve backend",
     "serve:frontend": "nx serve frontend",
     "serve:all": "nx run-many -t serve --projects=backend,frontend --parallel",
     "db:generate": "cd apps/backend && npm run db:generate",
