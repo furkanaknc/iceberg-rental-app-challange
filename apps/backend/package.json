@@ -85,35 +85,35 @@
       "db:push": {
         "executor": "nx:run-commands",
         "options": {
-          "command": "prisma db push",
+          "command": "npx prisma db push",
           "cwd": "apps/backend"
         }
       },
       "db:migrate": {
         "executor": "nx:run-commands",
         "options": {
-          "command": "prisma migrate dev",
+          "command": "npx prisma migrate dev",
           "cwd": "apps/backend"
         }
       },
-      "db:migrate:deploy": {
+      "db:migrate:prod": {
         "executor": "nx:run-commands",
         "options": {
-          "command": "prisma migrate deploy",
+          "command": "npx prisma migrate deploy",
           "cwd": "apps/backend"
         }
       },
       "db:studio": {
         "executor": "nx:run-commands",
         "options": {
-          "command": "prisma studio",
+          "command": "npx prisma studio",
           "cwd": "apps/backend"
         }
       },
       "db:reset": {
         "executor": "nx:run-commands",
         "options": {
-          "command": "prisma migrate reset",
+          "command": "npx prisma migrate reset",
           "cwd": "apps/backend"
         }
       },
@@ -130,18 +130,40 @@
           "command": "ts-node prisma/seeds/create-main-office.ts",
           "cwd": "apps/backend"
         }
+      },
+      "db:seed:admin:prod": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "node prisma/seeds/create-admin.js",
+          "cwd": "apps/backend"
+        },
+        "dependsOn": [
+          "build"
+        ]
+      },
+      "db:seed:office:prod": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "node prisma/seeds/create-main-office.js",
+          "cwd": "apps/backend"
+        },
+        "dependsOn": [
+          "build"
+        ]
       }
     }
   },
   "scripts": {
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:migrate": "npx prisma migrate dev",
+    "db:migrate:prod": "npx prisma migrate deploy",
+    "db:studio": "npx prisma studio",
+    "db:reset": "npx prisma migrate reset",
     "db:seed:admin": "ts-node prisma/seeds/create-admin.ts",
-    "db:seed:office": "ts-node prisma/seeds/create-main-office.ts"
+    "db:seed:office": "ts-node prisma/seeds/create-main-office.ts",
+    "db:seed:admin:prod": "node prisma/seeds/create-admin.js",
+    "db:seed:office:prod": "node prisma/seeds/create-main-office.js"
   },
   "dependencies": {}
 }

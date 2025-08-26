@@ -6,9 +6,12 @@ import { EnvironmentService } from './modules/common/environment/environment.ser
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const envService = app.get(EnvironmentService);
+
+  const allowedOrigin = envService.get('FRONTEND_URL');
 
   app.enableCors({
-    origin: ['http://localhost:4200'],
+    origin: [allowedOrigin],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -41,7 +44,7 @@ async function bootstrap() {
     },
   });
 
-  const envService = app.get(EnvironmentService);
+  
 
   const port = envService.get('PORT');
 

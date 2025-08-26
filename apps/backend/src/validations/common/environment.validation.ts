@@ -4,6 +4,7 @@ export const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
 
   DATABASE_URL: z.string(),
+  FRONTEND_URL: z.string().default('http://localhost:4200'),
 
   BCRYPT_SALT_ROUND: z.coerce.number().default(10),
 
